@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { loginSchema, registerSchema } from "../validators/auth.validator";
 import { loginService, registerService } from "../services/auth.service";
@@ -50,7 +50,7 @@ export const logoutController = asyncHandler(
 export const authStatusController = asyncHandler(
     async (req: Request, res: Response) => {
         const user = req.user;
-        return clearJwtAuthCookie(res).status(HTTPSTATUS.OK).json({
+        return res.status(HTTPSTATUS.OK).json({
             message: "Authenticated User",
             user,
         })

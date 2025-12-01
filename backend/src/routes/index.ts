@@ -6,7 +6,7 @@ import userRoutes from "./user.chat";
 const router = Router();
 router.use("/auth", authRoutes);
 router.use("/chat", chatRoutes);
-router.use("/user", userRoutes)
+router.use("/users", userRoutes)
 
 
 export default router;

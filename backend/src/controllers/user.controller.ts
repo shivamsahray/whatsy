@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { HTTPSTATUS } from "../config/http.config";
 import { getUsersService } from "../services/user.service";

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoSvg from "@/assets/logo.png";
+import logoSvg from "@/assets/OIP.webp";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {

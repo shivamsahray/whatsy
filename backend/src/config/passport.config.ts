@@ -11,7 +11,7 @@ passport.use(
                 (req) => {
                     const token = req.cookies.accessToken;
                     if(!token) throw new UnauthorizedException("Unauthorized Access");
-                    return token;
+                    return token || null;
                 }
             ]),
             secretOrKey: Env.JWT_SECRET,

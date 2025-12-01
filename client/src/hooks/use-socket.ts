@@ -20,6 +20,8 @@ export const useSocket = create<SocketState>()((set, get) => ({
         const newSocket = io(BASE_URL, {
             withCredentials: true,
             autoConnect: true,
+            transports: ["websocket"],     // ← IMPORTANT FIX
+
         });
 
         set({ socket: newSocket});
