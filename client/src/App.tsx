@@ -19,10 +19,11 @@ function App() {
   console.log(onlineUsers," onlineusers")
 
   useEffect(() => {
+    if(isAuth) return;
     isAuthStatus();
-  }, [isAuthStatus])
+  }, [isAuthStatus, isAuth])
 
-  if(!user && isAuthStatusLoading && !isAuth){
+  if(!user && isAuthStatusLoading){
     return(
       <div className='flex flex-col items-center justify-center h-screen'>
         <Logo imgClass='size-20' showText={false}/>

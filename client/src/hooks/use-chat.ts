@@ -1,8 +1,10 @@
 import { API } from "@/lib/axios-client";
 import type { UserType } from "@/types/auth.type";
-import type { ChatType, MessageType, CreateChatType } from "@/types/chat.type";
+import type { ChatType, MessageType, CreateChatType, CreateMessageType } from "@/types/chat.type";
 import { toast } from "sonner";
 import { create } from "zustand";
+import { useAuth } from "./use-auth";
+import { generateUUID } from "@/lib/helper";
 interface ChatState {
     chats: ChatType[];
     users: UserType[];
@@ -19,9 +21,10 @@ interface ChatState {
     fetchChats: () => void;
     createChat: (payload: CreateChatType) => Promise<ChatState | null>;
     fetchSingleChat: (chatId: string) => void;
-    // sendMessage: () => void
+    sendMessage: (payload: CreateMessageType) => void;
     addNewChat: (newChat: ChatType) => void;
     updateChatLastMessage: (chatId: string, lastMessage: MessageType) => void;
+    addNewMessage: (chatId: string, message: MessageType) => void;
 }
 
 export const useChat = create<ChatState>()((set, get) => ({
@@ -71,8 +74,71 @@ export const useChat = create<ChatState>()((set, get) => ({
             set({ isCreatingChat: false })
         }
     },
-    fetchSingleChat: () => {
-        set({ isSingleChatLoading: true})
+    fetchSingleChat: async(chatId: string) => {
+        set({ isSingleChatLoading: true});
+        try {
+            const { data } = await API.get(`/chat/${chatId}`);
+            set({SingleChat: data})
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Failed to fetch chat");
+        }finally{
+            set({isSingleChatLoading: false})
+        }
+    },
+    sendMessage: async(payload: CreateMessageType) => {
+        const {chatId, replyTo, content, image } = payload;
+        const { user } = useAuth.getState();
+        // const currentChat = get().SingleChat
+
+        if(!chatId || !user?._id) return;
+        const tempMsgId = generateUUID();
+
+        const tempMessage = {
+            _id: tempMsgId,
+            chatId,
+            content: content || null,
+            image: image || null,
+            sender: user,
+            replyTo: replyTo || null,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            status: "sending..."
+
+        }
+
+        set((state) => {
+            if(state.SingleChat?.chat?._id !== chatId) return state;
+            return {
+                SingleChat: {
+                    ...state.SingleChat,
+                    message: [...state.SingleChat.message, tempMessage]
+                }
+            }
+        });
+
+        try {
+            const { data } = await API.post("/chat/message/send", {
+                chatId,
+                content,
+                image,
+                replyToId: replyTo?._id,
+            })
+
+            const { userMessage } = data;
+            set((state) => {
+            if(!state.SingleChat) return state;
+            return {
+                SingleChat: {
+                    ...state.SingleChat,
+                    message: state.SingleChat.message.map((msg) => msg._id === tempMsgId ? userMessage : msg)
+                }
+            }
+            });
+            
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message || "Failed to send message")
+        }
+
     },
     addNewChat: (newChat: ChatType) => {
         set((state) => {
@@ -99,5 +165,19 @@ export const useChat = create<ChatState>()((set, get) => ({
                 ]
             }
         })
+    },
+    addNewMessage: (chatId, message) => {
+        const chat = get().SingleChat;
+
+        if(chat?.chat._id === chatId){
+            set({
+                SingleChat: {
+                    chat: chat.chat,
+                    message: [
+                        ...chat.message, message 
+                    ]
+                }
+            })
+        }
     },
 }))
