@@ -30,7 +30,7 @@ export const ChatBodyMessage = memo(({
     )
 
     const messageClass = cn("min-w-[200px] px-3 py-2 text-sm break-words shadow-sm",
-        isCurrentUser ? "bg-accent dark:bg-primary/40 rounded-tr-xl rounded-l-xl" : "bg-[#F5F5F5] dark:bg-accent rounded-bl-xl rounded-r-xl"
+        isCurrentUser ? "bg-primary text-primary-foreground rounded-tr-xl rounded-l-xl" : "bg-[#F5F5F5] text-black dark:text-primary-foreground dark:bg-accent rounded-bl-xl rounded-r-xl"
     )
 
     const replyBoxClass = cn(
@@ -55,8 +55,10 @@ export const ChatBodyMessage = memo(({
                         {/* {Header} */}
 
                         <div className="flex items-center gap-2 mb-0.5 pb-1">
-                            <span className="text-xs font-semibold">{senderName}</span>
-                            <span className="text-[11px] text-gray-700 dark:text-gray-300">
+                            <span className="text-xs font-semibold opacity-90">{senderName}</span>
+                            <span className={cn("text-[11px] opacity-70",
+                                isCurrentUser ? "text-primary-foreground" : "text-gray-500 dark:text-gray-300"
+                            )}>
                                 {formatChatTime(message?.createdAt)}
 
                             </span>
@@ -79,7 +81,7 @@ export const ChatBodyMessage = memo(({
                             />
                         )}
 
-                        { message.content && <p>{message.content}</p>}
+                        { message.content && <p className={cn(isCurrentUser ? "text-primary-foreground": "text-black dark:text-white")}>{message.content}</p>}
                     </div>
 
                     {/* ReplyIconButton */}

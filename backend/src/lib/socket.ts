@@ -29,7 +29,11 @@ export const initializeSocket = (httpServer: HTTPServer) => {
 
       if (!rawCookie) return next(new Error("Unauthorized"));
 
-      const token = rawCookie?.split("=")?.[1]?.trim();
+      const token = rawCookie
+        .split(';')
+        .find((c) => c.trim().startsWith('accessToken='))
+        ?.split('=')[1]
+        ?.trim();
       if (!token) return next(new Error("Unauthorized"));
 
       const decodedToken = jwt.verify(token, Env.JWT_SECRET) as {
@@ -40,6 +44,7 @@ export const initializeSocket = (httpServer: HTTPServer) => {
       socket.userId = decodedToken.userId;
       next();
     } catch (error) {
+      console.error("Socket authentication error: ", error)
       next(new Error("Internal server error"));
     }
   });
