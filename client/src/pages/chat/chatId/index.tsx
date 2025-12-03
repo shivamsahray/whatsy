@@ -49,7 +49,7 @@ const SingleChat = () => {
     return <div className="relative h-svh flex flex-col">
         <ChatHeader chat={chat} currentUserId={currentUserId} />
         
-        <div className="flex-1 overflow-y-auto bg-background">
+        <div className="flex-1 overflow-y-scroll bg-background">
             {messages?.length === 0 ? (
                 <EmptyState 
                     title="Start a conversation"

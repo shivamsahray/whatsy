@@ -113,7 +113,7 @@ export const NewChatPopover = memo(() => {
                     </InputGroup>
                 </div>
 
-                <div className="flex-1 justify-center overflow-y-auto px-1 py-1 space-y-1">
+                <div className="flex-1 justify-center px-1 py-1 space-y-1">
                     {isUsersLoading ? (
                         <Spinner className="w-6 h-6 "/>
                     ): users && users?.length === 0 ? (

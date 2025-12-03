@@ -20,7 +20,7 @@ const Logo = ({
             <img src={logoSvg} alt="Chatify logo" className={cn(imgClass)} />
             {showText && (
             <span className={cn("font-semibold text-lg leading-tight", textClass)}>
-                Chatify
+                Whatsy
             </span>
             )}
         </Link>

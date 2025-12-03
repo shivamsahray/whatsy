@@ -35,27 +35,19 @@ const ChatBody = ({
         
         bottomRef.current?.scrollIntoView({ behavior: "smooth"});
     }, [messages])
-    return <div className="flex-1 overflow-hidden">
-        <div className="h-auto max-h-screen overflow-y-auto">
-            <div className="w-full max-w-6xl mx-auto h-full flex flex-col px-3">
-                
-
-                {Array.isArray(messages) &&
+    return <div className="w-full max-w-6xl mx-auto flex flex-col px-3 py-4">
+            {Array.isArray(messages) &&
                 messages.map((message) => (
                     <ChatBodyMessage
-                    key={message._id}
-                    message={message}
-                    onReply={onReply}
+                        key={message._id}
+                        message={message}
+                        onReply={onReply}
                     />
                 ))
-                }
-                <br />
-                <br/>
-                <div ref={bottomRef} />
-            </div>
-            
+            }
+            {/* Spacer for bottom scrolling */}
+            <div ref={bottomRef} className="mt-2" />
         </div>
-    </div>
 }
 
 export default ChatBody;
