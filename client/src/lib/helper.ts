@@ -30,12 +30,14 @@ export const getOtherUserAndGroup = (
         (p) => p._id !== currentUserId
     )
     const isOnline = isUserOnline(other?._id ?? "");
+    const subheading = other?.isAI ? "Assistant" : isOnline ? "Online" : "Offline";
     return {
         name: other?.name || "Unknown",
-        subheading: isOnline ? "Online" : "Offline",
+        subheading: subheading,
         avatar: other?.avatar || "",
         isGroup: false,
-        isOnline
+        isOnline,
+        isAI: other?.isAI || false,
     }
 }
 

@@ -1,9 +1,14 @@
 // import { emitNewChatToParticpants } from "../lib/socket";
+import {createGoogleGenerativeAI } from "@ai-sdk/google"
 import ChatModel from "../models/chat.model";
 import MessageModel from "../models/message.module";
 import UserModel from "../models/user.model";
 import { BadRequestException, NotFoundException } from "../utils/app-error";
+import { Env } from "../config/env.config";
 
+const google = createGoogleGenerativeAI({
+  apiKey: Env.GOOGLE_GENERATIVE_AI_API_KEY
+})
 export const createChatService = async (
   userId: string,
   body: {
@@ -36,7 +41,7 @@ export const createChatService = async (
         $all: allParticipantIds,
         $size: 2,
       },
-    }).populate("participants", "name avatar");
+    }).populate("participants", "name avatar isAI");
 
     if (existingChat) return existingChat;
 
@@ -67,12 +72,12 @@ export const getUserChatsService = async (userId: string) => {
       $in: [userId],
     },
   })
-    .populate("participants", "name avatar")
+    .populate("participants", "name avatar isAI")
     .populate({
       path: "lastMessage",
       populate: {
         path: "sender",
-        select: "name avatar",
+        select: "name avatar isAI",
       },
     })
     .sort({ updatedAt: -1 });
@@ -85,7 +90,7 @@ export const getSingleChatService = async (chatId: string, userId: string) => {
     participants: {
       $in: [userId],
     },
-  }).populate("participants", "name avatar");
+  }).populate("participants", "name avatar isAI");
 
   if (!chat)
     throw new BadRequestException(
@@ -93,13 +98,13 @@ export const getSingleChatService = async (chatId: string, userId: string) => {
     );
 
   const messages = await MessageModel.find({ chatId })
-    .populate("sender", "name avatar")
+    .populate("sender", "name avatar isAI")
     .populate({
       path: "replyTo",
       select: "content image sender",
       populate: {
         path: "sender",
-        select: "name avatar",
+        select: "name avatar isAI",
       },
     })
     .sort({ createdAt: 1 });
