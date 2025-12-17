@@ -40,11 +40,11 @@ const ChatBody = ({
             chatId: streamChatId,
             chunk,
             done,
+            // sender,
             message,
             // eslint-disabled-next-line @typescript-eslint/no-explicit-any
         }: any) => {
             if(streamChatId !== chatId) return; 
-
             const lastMsg = messages.at(-1);
             if(!lastMsg?._id && lastMsg?.streaming) return;
 
@@ -77,8 +77,10 @@ const ChatBody = ({
     }, [socket, addOrUpdateMessage, chatId, messages])
 
     useEffect(() => {
-        
-        bottomRef.current?.scrollIntoView({ behavior: "smooth"});
+        if(!messages.length) return;
+        const lastMsg = messages[messages.length - 1];
+        const isStreaming = lastMsg?.streaming;
+        bottomRef.current?.scrollIntoView({ behavior: isStreaming ? "auto" : "smooth"});
     }, [messages])
     return <div className="w-full max-w-6xl mx-auto flex flex-col px-3 py-4">
             {Array.isArray(messages) &&

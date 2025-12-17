@@ -12,6 +12,7 @@ import connectDatabase from "./config/database.config";
 import router from "./routes/index";
 import "./config/passport.config";
 import { initializeSocket } from "./lib/socket";
+import path from "path";
 
 const app = express();
 const server = http.createServer(app);
@@ -35,7 +36,16 @@ app.get('/health', asyncHandler(async(req: Request, res: Response) => {
         message: "Server is healthy", 
     })
 }))
+if(Env.NODE_ENV === "production"){
+    const clientPath = path.resolve(__dirname, "../../client/dist");
 
+    //server static files
+    app.use(express.static(clientPath))
+    
+    app.get(/^(?!\/api).*/, (req: Request, res: Response) => {
+        res.sendFile(path.join(clientPath, "index.html"));
+    })
+}
 server.listen(Env.PORT,async () => {
     await connectDatabase();
     console.log(`Server running on port ${Env.PORT} in ${Env.NODE_ENV} mode`);

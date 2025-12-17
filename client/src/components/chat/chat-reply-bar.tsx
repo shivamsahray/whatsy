@@ -16,14 +16,14 @@ const ChatReplyBar = ({
 
     const senderName = replyTo.sender?._id === currentUserId ? "You" : replyTo.sender?.name;
 
-    return <div className="absolute bottom-16 left-0 right-0 bg-card border-t animate-in slide-in-from-bottom pb-4 px-6">
+    return <div className="absolute bottom-16 left-0 right-0 bg-card border-t animate-in slide-in-from-bottom pb-4 px-6 ">
         <div className="flex flex-1 justify-between mt-3 p-3 text-sm border-l-4 border-l-primary bg-primary/10 rounded-md shadow-sm">
             <div className="flex-1">
                 <h5 className="font-medium">{senderName}</h5>
                 {replyTo?.image ? (
                     <p className="text-muted-foreground">Photo</p>
                 ): (
-                    <p className="truncate text-ellipsis">
+                    <p className="truncate max-w-4xl text-ellipsis overflow-auto">
                         {replyTo.content}
                     </p>
                 )}

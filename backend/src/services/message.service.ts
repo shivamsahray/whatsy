@@ -100,7 +100,7 @@ export const sendMessageService = async (
 };
 
 async function getAIResponse(chatId: string, userId: string) {
-  const whopAI = await UserModel.findOne({ isAi: true});
+  const whopAI = await UserModel.findOne({ isAI: true});
   if(!whopAI) throw new NotFoundException("AI user is not found");
 
   const chatHistory = await getChatHistory(chatId);

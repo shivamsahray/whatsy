@@ -73,7 +73,7 @@ export const ChatBodyMessage = memo(({
                 <h5 className="font-medium">{replySenderName}</h5>
                 <p
                   className="font-normal text-muted-foreground
-                 max-w-[250px]  truncate
+                 max-w-[250px] truncate
                 "
                 >
                   {message?.replyTo?.content ||
