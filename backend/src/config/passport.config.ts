@@ -1,4 +1,5 @@
 import passport from "passport";
+import { Request } from "express";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { UnauthorizedException } from "../utils/app-error";
 import { Env } from "./env.config";
@@ -8,7 +9,7 @@ passport.use(
     new JwtStrategy(
         {
             jwtFromRequest: ExtractJwt.fromExtractors([
-                (req) => {
+                (req: Request) => {
                     const token = req.cookies.accessToken;
                     if(!token) throw new UnauthorizedException("Unauthorized Access");
                     return token || null;
